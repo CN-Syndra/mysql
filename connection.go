@@ -147,7 +147,6 @@ func (mc *mysqlConn) cleanup() {
 		return
 	}
 	if err := mc.netConn.Close(); err != nil {
-		errLog.Print(err)
 	}
 }
 
@@ -170,7 +169,7 @@ func (mc *mysqlConn) Prepare(query string) (driver.Stmt, error) {
 	err := mc.writeCommandPacketStr(comStmtPrepare, query)
 	if err != nil {
 		// STMT_PREPARE is safe to retry.  So we can return ErrBadConn here.
-		errLog.Print(err)
+
 		return nil, driver.ErrBadConn
 	}
 
@@ -204,7 +203,7 @@ func (mc *mysqlConn) interpolateParams(query string, args []driver.Value) (strin
 	buf, err := mc.buf.takeCompleteBuffer()
 	if err != nil {
 		// can not take the buffer. Something must be wrong with the connection
-		errLog.Print(err)
+
 		return "", ErrInvalidConn
 	}
 	buf = buf[:0]
